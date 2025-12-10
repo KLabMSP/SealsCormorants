@@ -27,6 +27,65 @@ extract_seal_density <- function(dataframe){
     )
   }
 
-return(res)
+  return(res)
+
+}
+
+
+#' Plotting seal density maps
+#'
+#' This function plots seal density for each year
+#' @export
+#' @examples
+#' plot_seal_density_maps()
+
+
+plot_seal_density_maps <- function(){
+
+  plot.list = list()
+
+  for(y in 2003:2020){
+
+    map = terra::rast(paste0("//storage-ua.slu.se/research$/Aqua/Områdesskydd och havsplanering/seals-cormorants/grey-seal-maps-Floris/densityLayersNormalized/Predictions_" , y, "_normalized.tif"))
+
+    map = terra::crop(map, terra::ext(4.6e+06, 5.4e+06, 3.4e+06, 4.8e+06))
+
+    p = ggplot2::ggplot() +
+      tidyterra::geom_spatraster(data = map$pred_mean) +
+      tidyterra::scale_fill_whitebox_c(palette = "muted") +
+      ggplot2::coord_sf(crs = crs(map)) +
+      ggplot2::labs(
+        fill = "Grey seal\ndensity index",
+        title = y) +
+      ggplot2::theme_void()
+
+    plot.list[[y-2002]] = p
+
+  }
+
+
+  p = ggpubr::ggarrange(plot.list[[1]],
+            plot.list[[2]],
+            plot.list[[3]],
+            plot.list[[4]],
+            plot.list[[5]],
+            plot.list[[6]],
+            plot.list[[7]],
+            plot.list[[8]],
+            plot.list[[9]],
+            plot.list[[10]],
+            plot.list[[11]],
+            plot.list[[12]],
+            plot.list[[13]],
+            plot.list[[14]],
+            plot.list[[15]],
+            plot.list[[16]],
+            plot.list[[17]],
+            plot.list[[18]],
+            common.legend = T,
+            nrow = 3, ncol = 6,
+            legend = "right"
+            )
+return(p)
 
 }

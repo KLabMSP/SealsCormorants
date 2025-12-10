@@ -3,3 +3,4 @@
 export(cormorant_predation_index)
 export(extract_seal_density)
 export(load_grey_seal_counts)
+export(plot_seal_density_maps)

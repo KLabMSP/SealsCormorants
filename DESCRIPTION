@@ -14,4 +14,5 @@ BugReports: https://github.com/KLabMSP/SealsCormorants/issues
 Imports:
     lubridate,
     terra,
-    sf
+    sf,
+    ggpubr
