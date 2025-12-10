@@ -23,7 +23,7 @@ extract_seal_density <- function(dataframe){
 
     locs_fixed = as.data.frame(seegSDM::nearestLand(points = locs, raster = raster::raster(map), max_distance = 10000))
 
-    distances = st_distance(sf::st_as_sf(as.data.frame(locs), coords = c("X", "Y"), crs = terra::crs(map)),
+    distances = sf::st_distance(sf::st_as_sf(as.data.frame(locs), coords = c("X", "Y"), crs = terra::crs(map)),
                             sf::st_as_sf(as.data.frame(locs_fixed), coords = c("x", "y"), crs = terra::crs(map)),
                             by_element = T)
 
