@@ -10,7 +10,7 @@
 load_grey_seal_counts <- function(){
 
   # load data
-  seals.nrm = read.csv("//storage-ua.slu.se/research$/Aqua/Områdesskydd och havsplanering/seal-scormorants/grey-seal-counts/grey_seal_count.csv", fileEncoding = "ISO-8859-1") # load data
+  seals.nrm = read.csv("//storage-ua.slu.se/research$/Aqua/Områdesskydd och havsplanering/seals-cormorants/grey-seal-counts/grey_seal_count.csv", fileEncoding = "ISO-8859-1") # load data
 
   # fix lat and long variables
   seals.nrm$lat = as.numeric(substr(seals.nrm$lat, 1,2)) +
