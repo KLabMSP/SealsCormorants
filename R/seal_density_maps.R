@@ -27,5 +27,6 @@ extract_seal_density <- function(dataframe){
     )
   }
 
+return(res)
 
 }
