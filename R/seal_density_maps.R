@@ -19,7 +19,7 @@ extract_seal_density <- function(dataframe){
     df.sub = subset(df, year == y)
 
     locs = sf::st_as_sf(df.sub, coords = c("long", "lat"), crs = 4326)
-    locs = sf::st_coordinates(sf::st_transform(locs, crs(map)))
+    locs = sf::st_coordinates(sf::st_transform(locs, terra::crs(map)))
 
     res = rbind(
       res,
