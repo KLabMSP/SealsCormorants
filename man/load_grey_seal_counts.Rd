@@ -2,17 +2,16 @@
 % Please edit documentation in R/load_grey_seal_counts.R
 \name{load_grey_seal_counts}
 \alias{load_grey_seal_counts}
-\title{A Cat Function}
+\title{Loading grey seal count data}
 \usage{
 load_grey_seal_counts()
 }
-\arguments{
-\item{love}{Do you love cats? Defaults to TRUE.}
+\value{
+a file with grey seal count data
 }
 \description{
-This function allows you to express your love of cats.
+This function loads grey seal count data from our research server and cleans it up.
 }
 \examples{
-cat_function()
+seal_data = load_grey_seal_counts()
 }
-\keyword{cats}
