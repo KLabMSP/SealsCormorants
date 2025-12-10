@@ -55,13 +55,9 @@ load_grey_seal_counts <- function(){
   seals.nrm = seals.nrm[!(seals.nrm$year == 2002 & seals.nrm$species == "Phocidae"),] # a few places where species were counted together
   seals.nrm = seals.nrm[!(seals.nrm$year == 2001 & seals.nrm$species == "Phocidae" & seals.nrm$station == "DEGERSHUVUD"),] # one seal reported in water
   seals.nrm$species[seals.nrm$year == 2001] =  "Halichoerus grypus" # rest of Phocidae this year are from Märket - these are grey seals
-<<<<<<< HEAD
 
   seals.nrm$week = lubridate::week(seals.nrm$date)
 
-=======
-  seals.nrm$week = week(seals.nrm$date)
->>>>>>> 0d847b72e4c0e0ccb253f80023a6b5cb2a46bcfc
   seals.nrm = seals.nrm[!(seals.nrm$year == 1999 & seals.nrm$species == "Phocidae"),] # ice count that can not be seen in report
   seals.nrm = seals.nrm[!(seals.nrm$year %in% 1994:1995 & seals.nrm$species == "Phocidae" & seals.nrm$station == "TISTERÖRARNA"),] # mixed ringed and grey
   seals.nrm = seals.nrm[!(seals.nrm$year == 1993 & seals.nrm$species == "Phocidae" & seals.nrm$station %in% c("Gunnarstenarna", "Haparanda skärgård")),] # unclear one-off observation
