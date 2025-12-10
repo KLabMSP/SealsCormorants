@@ -6,7 +6,7 @@
 #' seal_data = load_seal_counts()
 
 
-load_seal_counts = function(){
+load_seal_counts <- function(){
 
   # libraries needed
   library(lubridate)
