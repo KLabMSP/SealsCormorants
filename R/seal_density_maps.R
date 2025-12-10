@@ -3,7 +3,7 @@
 #' This function extracts seal density from maps based on year and location.
 #' @export
 #' @examples
-#' df = data.frame(year = 2003:2020, long = 19.6, lat = 60.5)
+#' df = data.frame(year = c(2020, 2020), long = c(17.6, 19.6), lat = c(60.5, 60.5))
 #' seal_density = extract_seal_density(df)
 
 
@@ -12,7 +12,7 @@ extract_seal_density <- function(dataframe){
   res = data.frame()
 
   # loop through years
-  for(y in dataframe$year){
+  for(y in unique(dataframe$year)){
 
     map = terra::rast(paste0("//storage-ua.slu.se/research$/Aqua/Områdesskydd och havsplanering/seals-cormorants/grey-seal-maps-Floris/densityLayersNormalized/Predictions_" , y, "_normalized.tif"))
 
@@ -21,9 +21,16 @@ extract_seal_density <- function(dataframe){
     locs = sf::st_as_sf(df.sub, coords = c("long", "lat"), crs = 4326)
     locs = sf::st_coordinates(sf::st_transform(locs, terra::crs(map)))
 
+    locs_fixed = as.data.frame(seegSDM::nearestLand(points = locs, raster = raster::raster(map), max_distance = 10000))
+
+    distances = st_distance(sf::st_as_sf(as.data.frame(locs), coords = c("X", "Y"), crs = terra::crs(map)),
+                            sf::st_as_sf(as.data.frame(locs_fixed), coords = c("x", "y"), crs = terra::crs(map)),
+                            by_element = T)
+
     res = rbind(
       res,
-      cbind(df.sub, terra::extract(map, locs))
+      cbind(df.sub, terra::extract(map, locs_fixed), data.frame(distance_to_data = distances))
+
     )
   }
 
@@ -65,27 +72,27 @@ plot_seal_density_maps <- function(){
 
 
   p = ggpubr::ggarrange(plot.list[[1]],
-            plot.list[[2]],
-            plot.list[[3]],
-            plot.list[[4]],
-            plot.list[[5]],
-            plot.list[[6]],
-            plot.list[[7]],
-            plot.list[[8]],
-            plot.list[[9]],
-            plot.list[[10]],
-            plot.list[[11]],
-            plot.list[[12]],
-            plot.list[[13]],
-            plot.list[[14]],
-            plot.list[[15]],
-            plot.list[[16]],
-            plot.list[[17]],
-            plot.list[[18]],
-            common.legend = T,
-            nrow = 3, ncol = 6,
-            legend = "right"
-            )
-return(p)
+                        plot.list[[2]],
+                        plot.list[[3]],
+                        plot.list[[4]],
+                        plot.list[[5]],
+                        plot.list[[6]],
+                        plot.list[[7]],
+                        plot.list[[8]],
+                        plot.list[[9]],
+                        plot.list[[10]],
+                        plot.list[[11]],
+                        plot.list[[12]],
+                        plot.list[[13]],
+                        plot.list[[14]],
+                        plot.list[[15]],
+                        plot.list[[16]],
+                        plot.list[[17]],
+                        plot.list[[18]],
+                        common.legend = T,
+                        nrow = 3, ncol = 6,
+                        legend = "right"
+  )
+  return(p)
 
 }
