@@ -1,7 +1,7 @@
 #' Loading grey seal count data
 #'
 #' This function loads grey seal count data from our research server and cleans it up.
-#' @return a file with grey seal count data
+#' @export
 #' @examples
 #' seal_data = load_grey_seal_counts()
 

@@ -6,12 +6,9 @@
 \usage{
 load_grey_seal_counts()
 }
-\value{
-a file with grey seal count data
-}
 \description{
 This function loads grey seal count data from our research server and cleans it up.
 }
 \examples{
-seal_data = load_grey_seal_counts()
+seal_data = load_seal_counts()
 }
