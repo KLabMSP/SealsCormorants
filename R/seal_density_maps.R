@@ -53,7 +53,7 @@ plot_seal_density_maps <- function(){
     p = ggplot2::ggplot() +
       tidyterra::geom_spatraster(data = map$pred_mean) +
       tidyterra::scale_fill_whitebox_c(palette = "muted") +
-      ggplot2::coord_sf(crs = crs(map)) +
+      ggplot2::coord_sf(crs = terra::crs(map)) +
       ggplot2::labs(
         fill = "Grey seal\ndensity index",
         title = y) +
