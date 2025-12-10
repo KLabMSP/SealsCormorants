@@ -9,7 +9,10 @@
 
 load_grey_seal_counts <- function(){
 
-    print("I love cats!")
+  # load data
+  seals.nrm = read.csv("//storage-ua.slu.se/research$/Aqua/Områdesskydd och havsplanering/seal-scormorants/grey-seal-counts/grey_seal_count.csv", fileEncoding = "ISO-8859-1") # load data
+
+  return(seals.nrm)
 
 
 }
