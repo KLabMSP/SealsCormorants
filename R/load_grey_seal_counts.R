@@ -1,9 +1,11 @@
-#' Loading grey seal count data
+#' A Cat Function
 #'
-#' This function loads grey seal count data from our research server and cleans it up.
+#' This function allows you to express your love of cats.
+#' @param love Do you love cats? Defaults to TRUE.
+#' @keywords cats
 #' @export
 #' @examples
-#' seal_data = load_grey_seal_counts()
+#' cat_function()
 
 
 
