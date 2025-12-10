@@ -76,5 +76,4 @@ load_grey_seal_counts <- function(){
 
   return(seals.nrm)
 
-
 }
