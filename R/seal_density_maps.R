@@ -14,16 +14,16 @@ extract_seal_density <- function(dataframe){
   # loop through years
   for(y in dataframe$year){
 
-    map = rast(paste0("//storage-ua.slu.se/research$/Aqua/Områdesskydd och havsplanering/seals-cormorants/grey-seal-maps-Floris/densityLayersNormalized/Predictions_" , y, "_normalized.tif"))
+    map = terra::rast(paste0("//storage-ua.slu.se/research$/Aqua/Områdesskydd och havsplanering/seals-cormorants/grey-seal-maps-Floris/densityLayersNormalized/Predictions_" , y, "_normalized.tif"))
 
     df.sub = subset(df, year == y)
 
-    locs = st_as_sf(df.sub, coords = c("long", "lat"), crs = 4326)
-    locs = st_coordinates(st_transform(locs, crs(map)))
+    locs = sf::st_as_sf(df.sub, coords = c("long", "lat"), crs = 4326)
+    locs = sf::st_coordinates(st_transform(locs, crs(map)))
 
     res = rbind(
       res,
-      cbind(df.sub, extract(map, locs))
+      cbind(df.sub, terra::extract(map, locs))
     )
   }
 
