@@ -25,7 +25,7 @@ extract_seal_density <- function(dataframe){
     locs = sf::st_as_sf(df.sub, coords = c("long", "lat"), crs = 4326)
     locs = sf::st_transform(locs, terra::crs(map))
 
-    if(nrow(df.sub > 1)){
+    if(nrow(df.sub) > 1){
 
       res = rbind(
         res,
@@ -36,7 +36,7 @@ extract_seal_density <- function(dataframe){
         )
       )
     }
-    if(nrow(df.sub == 1)){
+    if(nrow(df.sub) == 1){
 
       res = rbind(
         res,
