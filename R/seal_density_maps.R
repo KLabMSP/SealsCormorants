@@ -1,54 +1,4 @@
 
-nearestLand <- function (points, raster, max_distance) {
-  # get nearest non_na cells (within a maximum distance) to a set of points
-  # points can be anything extract accepts as the y argument
-  # max_distance is in the map units if raster is projected
-  # or metres otherwise
-
-  # function to find nearest of a set of neighbours or return NA
-  nearest <- function (lis, raster) {
-    neighbours <- matrix(lis[[1]], ncol = 2)
-    point <- lis[[2]]
-    # neighbours is a two column matrix giving cell numbers and values
-    land <- !is.na(neighbours[, 2])
-    if (!any(land)) {
-      # if there is no land, give up and return NA
-      return (c(NA, NA))
-    } else{
-      # otherwise get the land cell coordinates
-      coords <- raster::xyFromCell(raster, neighbours[land, 1])
-
-      if (nrow(coords) == 1) {
-        # if there's only one, return it
-        return (coords[1, ])
-      }
-
-      # otherwise calculate distances
-      dists <- sqrt((coords[, 1] - point[1]) ^ 2 +
-                      (coords[, 2] - point[2]) ^ 2)
-
-      # and return the coordinates of the closest
-      return (coords[which.min(dists), ])
-    }
-  }
-
-  # extract cell values within max_distance of the points
-  neighbour_list <- raster::extract(raster, points,
-                            buffer = max_distance,
-                            cellnumbers = TRUE)
-
-  # add the original point in there too
-  neighbour_list <- lapply(1:nrow(points),
-                           function(i) {
-                             list(neighbours = neighbour_list[[i]],
-                                  point = as.numeric(points[i, ]))
-                           })
-
-  return (t(sapply(neighbour_list, nearest, raster)))
-}
-
-
-
 #' Extracting data from the seal density maps
 #'
 #' This function extracts seal density from maps based on year and location.
@@ -65,22 +15,25 @@ extract_seal_density <- function(dataframe){
   # loop through years
   for(y in unique(dataframe$year)){
 
+    # load map for given year
     map = terra::rast(paste0("//storage-ua.slu.se/research$/Aqua/Områdesskydd och havsplanering/seals-cormorants/grey-seal-maps-Floris/densityLayersNormalized/Predictions_" , y, "_normalized.tif"))
 
+    # subset to data from this year
     df.sub = subset(df, year == y)
 
+    # fix coordinates to match map
     locs = sf::st_as_sf(df.sub, coords = c("long", "lat"), crs = 4326)
-    locs = sf::st_coordinates(sf::st_transform(locs, terra::crs(map)))
+    locs = sf::st_transform(locs, terra::crs(map))
 
-    locs_fixed = as.data.frame(nearestLand(points = locs, raster = raster::raster(map), max_distance = 10000))
-
-    distances = sf::st_distance(sf::st_as_sf(as.data.frame(locs), coords = c("X", "Y"), crs = terra::crs(map)),
-                            sf::st_as_sf(as.data.frame(locs_fixed), coords = c("x", "y"), crs = terra::crs(map)),
-                            by_element = T)
 
     res = rbind(
       res,
-      cbind(df.sub, terra::extract(map, locs_fixed), data.frame(distance_to_data = distances))
+      cbind(df.sub,
+            data.frame(pred_mean = terra::extract(map$pred_mean, locs, search_radius = 10000)[, c("pred_mean")]),
+            data.frame(pred_95CI_lower = terra::extract(map$pred_95CI_lower, locs, search_radius = 10000)[, c("pred_95CI_lower")]),
+            terra::extract(map$pred_95CI_upper, locs, search_radius = 10000)[, c("pred_95CI_upper", "distance")]
+
+            )
 
     )
   }
