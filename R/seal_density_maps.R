@@ -33,7 +33,7 @@ nearestLand <- function (points, raster, max_distance) {
   }
 
   # extract cell values within max_distance of the points
-  neighbour_list <- raster:extract(raster, points,
+  neighbour_list <- raster::extract(raster, points,
                             buffer = max_distance,
                             cellnumbers = TRUE)
 
