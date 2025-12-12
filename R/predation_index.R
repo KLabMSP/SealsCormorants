@@ -45,11 +45,11 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
 
 
     # empty raster for adding new values
-    tot = land; values(tot) = 0
+    tot = land; terra::values(tot) = 0
 
     for(l in 1:15){
-      dists = distance(land, vect(locs)[l,], rasterize = TRUE)
-      values(dists) = (dnorm(values(dists), 0, sigma)/dnorm(0, 0, sigma))*as.numeric(counts.y$count[l])
+      dists = terra::distance(land, vect(locs)[l,], rasterize = TRUE)
+      terra::values(dists) = (dnorm(terra::values(dists), 0, sigma)/dnorm(0, 0, sigma))*as.numeric(counts.y$count[l])
       dists[dists > 40000] = 0
 
       tot = tot + dists
@@ -66,13 +66,10 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
     locs = sf::st_transform(locs, terra::crs(land))
 
     # extract values and add to dataframe
-    extract.y$predation = extract(tot, locs)
-    extract.res = rbind(extract.res, extract.y)
+    extract.y$predation = terra::extract(tot, locs)
+    extract.res = rbind(terra::extract.res, extract.y)
 
   }
-
-
-
 
   return(extract.res)
 
