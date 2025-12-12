@@ -10,6 +10,6 @@ extract_seal_density(dataframe)
 This function extracts seal density from maps based on year and location.
 }
 \examples{
-df = data.frame(year = 2003:2020, long = 19.6, lat = 60.5)
+df = data.frame(year = c(2020, 2020), long = c(17.6, 19.6), lat = c(60.5, 60.5))
 seal_density = extract_seal_density(df)
 }
