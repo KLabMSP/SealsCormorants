@@ -27,4 +27,10 @@ load_cormorant_census_counts <- function(){
 
 load_cormorant_county_counts <- function(counties){
 
+  cormorant.county.data = read.csv("//storage-ua.slu.se/research$/Aqua/Områdesskydd och havsplanering/seals-cormorants/cormorant-counts/cormorant-county-data.csv", fileEncoding = "ISO-8859-1") # load data
+
+  cormorant.county.data = subset(cormorant.county.data, county %in% counties)
+
+  return(cormorant.county.data)
+
 }
