@@ -1,6 +1,6 @@
 #' Calculating seal or cormorant predation index
 #'
-#' This function extracts seal or cormorant predation index based on year and location.
+#' This function extracts seal or cormorant predation index based on year and location. Count data has to contain the columns lat, long, year and count. The dataset for which to extract values has to contain the columns lat, long and year. Species has to be 'cormorant' or 'grey_seal'.
 #' @export
 #' @examples
 #' dataframe.extract = data.frame(year = 2023, long = 16.68711, lat = 57.50516)
@@ -14,15 +14,15 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
 
 
   # check format of data frames
-
+  if(sum(names(dataframe.counts) %in% c("long", "lat", "year", "count")) != 3) return(print("Count data has to contain the columns lat, long, year and count. Try again!"))
+  if(sum(names(dataframe.extract) %in% c("long", "lat", "year")) != 3) return(print("The dataset for which to extract values has to contain the columns lat, long and year. Try again!"))
 
   # smooth paras
   if(species == "cormorant") max_dist = 40000
   if(species == "grey_seal") max_dist = 60000
-  if(!(species %in% c("cormorant", "grey_seal"))){
-    print("Species has to be 'cormorant' or 'grey_seal'")
+  if(!(species %in% c("cormorant", "grey_seal"))) return(print("Species has to be 'cormorant' or 'grey_seal'. Try again!"))
 
-  }
+
   sigma = max_dist/1.96
 
   land = terra::rast("//storage-ua.slu.se/research$/Aqua/Områdesskydd och havsplanering/GIS-filer/baltic_sea_bathymetry_database/BSBD_0.9.6_250m/BSBD_0.9.6_250m.tif")
@@ -32,7 +32,7 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
 
   # years
   years = sort(unique(dataframe.extract$year))
-  if(!(years %in% dataframe.counts$year)) print("You do not have count data for these years!")
+  if(!(years %in% dataframe.counts$year)) return(print("You do not have count data for these years. Try again!"))
 
   extract.res = data.frame()
 

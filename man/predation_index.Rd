@@ -4,13 +4,15 @@
 \alias{predation_index}
 \title{Calculating seal or cormorant predation index}
 \usage{
-predation_index(dataframe, species)
+predation_index(dataframe.counts, dataframe.extract, species)
 }
 \description{
-This function extracts seal or cormorant predation index based on year and location.
+This function extracts seal or cormorant predation index based on year and location. Count data has to contain the columns lat, long, year and count. The dataset for which to extract values has to contain the columns lat, long and year. Species has to be 'cormorant' or 'grey_seal'.
 }
 \examples{
-df_locs = data.frame(year = 2023, long = 18, lat = 60.5)
-df_data =
-predation = predation_index(df)
+dataframe.extract = data.frame(year = 2023, long = 16.68711, lat = 57.50516)
+dataframe.counts = load_cormorant_census_counts()
+dataframe.counts = subset(df_data, year == 2023)
+species = "cormorant"
+predation = predation_index(dataframe.counts, dataframe.extract, species)
 }
