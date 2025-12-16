@@ -14,7 +14,7 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
 
 
   # check format of data frames
-  if(sum(names(dataframe.counts) %in% c("long", "lat", "year", "count")) != 3) return(print("Count data has to contain the columns lat, long, year and count. Try again!"))
+  if(sum(names(dataframe.counts) %in% c("long", "lat", "year", "count")) != 4) return(print("Count data has to contain the columns lat, long, year and count. Try again!"))
   if(sum(names(dataframe.extract) %in% c("long", "lat", "year")) != 3) return(print("The dataset for which to extract values has to contain the columns lat, long and year. Try again!"))
 
   # smooth paras
