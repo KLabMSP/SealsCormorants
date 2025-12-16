@@ -12,13 +12,23 @@
 
 predation_index <- function(dataframe.counts, dataframe.extract, species){
 
+
+  # check format of data frames
+
+
   # smooth paras
   if(species == "cormorant") max_dist = 40000
+  if(species == "grey_seal") max_dist = 60000
+  if(!(species %in% c("cormorant", "grey_seal"))){
+    print("Species has to be 'cormorant' or 'grey_seal'")
+
+  }
   sigma = max_dist/1.96
 
   land = terra::rast("//storage-ua.slu.se/research$/Aqua/Områdesskydd och havsplanering/GIS-filer/baltic_sea_bathymetry_database/BSBD_0.9.6_250m/BSBD_0.9.6_250m.tif")
   land = terra::crop(land, terra::ext(4.25e+06, 5.45e+06, 3.3e+06, 5e+06))
-  land = as.numeric(land > 0)
+  land = as.numeric(land < 0)
+  terra::values(land)[terra::values(land) == 0] = NA
 
   # years
   years = sort(unique(dataframe.extract$year))
@@ -48,12 +58,33 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
     tot = land; terra::values(tot) = 0
 
     for(l in 1:nrow(counts.y)){
-      dists = terra::distance(land, terra::vect(locs)[l,], rasterize = TRUE)
-      terra::values(dists) = (dnorm(terra::values(dists), 0, sigma)/dnorm(0, 0, sigma))*as.numeric(counts.y$count[l])
-      dists[dists > 40000] = 0
+      if(species == "cormorant") dists = terra::distance(land, terra::vect(locs)[l,], rasterize = TRUE) # calculate distances from colony (assume can fly over land)
+      if(species == "grey_seal"){ # calculate distances from haul-out site (only travel by water)
 
-      tot = tot + dists
+        # move to closest location in water
+        loc = locs[l,]
+        cell = terra::extract(land, loc, search_radius = 10000)[2,3]
 
+        # calculate distance excluding land
+        terra::values(land)[cell] = 2
+        dists = terra::costDist(land, target = 2)
+        terra::values(land)[cell] = 1
+
+      }
+      # calculate predation index
+      pred.index = dists
+      terra::values(pred.index) = (dnorm(terra::values(dists), 0, sigma)/dnorm(0, 0, sigma))*as.numeric(counts.y$count[l])
+      pred.index[pred.index > max_dist] = 0 # always zero beyond max distance
+
+
+      # correct for amount of available water
+      wat.area = sum(terra::values(land)[terra::values(dists) <= max_dist], na.rm = T)*250*250
+      pred.index = pred.index/wat.area
+
+      # add values to total map
+      tot = tot + pred.index
+
+      # show progress
       current.progr = current.progr + 1
       if(current.progr %in% seq.to.print) print(paste(round((current.progr/tot.progr)*100), "% done"))
 
