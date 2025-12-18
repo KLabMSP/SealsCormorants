@@ -113,7 +113,7 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
   }
 
   # set land to NA
-  values(tot)[is.na(values(land))] = NA
+  terra::values(tot)[is.na( terra::values(land))] = NA
 
 
   return(extract.res)
