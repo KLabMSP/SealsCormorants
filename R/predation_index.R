@@ -80,10 +80,10 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
 
 
       # set land to NA
-      values(pred.index)[is.na(values(land))] = NA
+      terra::values(pred.index)[is.na(terra::values(land))] = NA
 
       # scaling factor by colony/haul-out count so that numbers add up
-      count.scaling = as.numeric(counts.y$count[l])/sum(values(pred.index), na.rm = T)
+      count.scaling = as.numeric(counts.y$count[l])/sum(terra::values(pred.index), na.rm = T)
       pred.index = (pred.index*count.scaling) # apply scaling
 
 
