@@ -101,19 +101,18 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
 
     }
 
+    # set land to NA
+    terra::values(tot)[is.na( terra::values(land))] = NA
 
     # fix coordinates for extraction to match map
     locs = sf::st_as_sf(extract.y, coords = c("long", "lat"), crs = 4326)
     locs = sf::st_transform(locs, terra::crs(land))
 
     # extract values and add to dataframe
-    extract.y$predation = terra::extract(tot, locs)$BSBD_0.9.6_250m
+    extract.y$predation = terra::extract(tot, locs, search_radius = 10000)$BSBD_0.9.6_250m
     extract.res = rbind(extract.res, extract.y)
 
   }
-
-  # set land to NA
-  terra::values(tot)[is.na( terra::values(land))] = NA
 
 
   return(extract.res)
