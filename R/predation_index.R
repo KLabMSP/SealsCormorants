@@ -75,7 +75,7 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
       # density as a function of distance
       pred.index = dists
       terra::values(pred.index) = (dnorm(terra::values(dists), 0, sigma)/dnorm(0, 0, sigma)) # function of distance
-      pred.index[pred.index > max_dist] = 0 # always zero beyond max distance
+      pred.index[terra::values(dists) > max_dist] = 0 # always zero beyond max distance
 
 
 
