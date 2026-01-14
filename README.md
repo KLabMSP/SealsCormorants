@@ -30,7 +30,7 @@ seals = load_grey_seal_counts()
 
 The first function loads data from the census counts carried out in 2006, 2012 and 2023.
 
-One important thing to note is that this can include some counts from lakes, but these are not consistently included and should perhaps be filtered out, even though these cormorants may forage at the coast.
+One important thing to note is that this can include some counts from lakes, but these are not consistently included and should perhaps be filtered out, even though these cormorants may forage at the coast. Also, in 2006, "landskap"" rather than county is provided.
 
 See <https://pub.epsilon.slu.se/33190/1/lundstrom-k-20240321b.pdf> for details.
 
@@ -66,7 +66,7 @@ The second function extracts data from the maps based on year, lat and long:
 
 ``` r
 dataframe.extract = data.frame(lat = 58.840285981212844, long =  17.62186805181973, year = 2020)
-extract_seal_density(dataframe.extract)
+seal_density_asko = extract_seal_density(dataframe.extract)
 ```
 
 The output is a data frame with the input data, mean predicted densities from the map, upper and lower 95% predicted densities from the map, as well as the distance from the provided coordinates to closest cell in the map which contained data, from which the data were extracted.
@@ -124,6 +124,33 @@ pred.index.asko.seal = predation_index(dataframe.counts, dataframe.extract, spec
 
 ## Comparison between grey seal density maps and calculated predation index
 
+``` r
+
+## calculate predation index
+
+dataframe.extract = data.frame(loc = c("Asköfjärden" ,      "Forsmark"     ,   "Galtfjärden"   ,    "Gaviksfjärden"    , "Holmön"   , "Torhamn" , "Kinnbäcksfjärden" ,     "Kvädöfjärden"    , "Lagnö"        ,            "Långvindsfjärden"  ,    "Norrbyn"   ,            "Råneå" ),
+                                 lat = c(58.83848,  60.43521, 60.15875, 62.87285, 63.67662, 56.08515, 65.04903,  58.01046, 59.56530,  61.45513, 63.53121, 65.83789),
+                               long =  c(17.63617,  18.15241, 18.61587, 18.23981, 20.85831, 15.78161, 21.53025, 16.73979, 18.84103,  17.16184, 19.81318, 22.42413))
+                               
+dataframe.extract = expand.grid(dataframe.extract, year = 2003:2020)                               
+
+dataframe.counts = subset(seals, year %in% 2003:2020) %>%
+  group_by(year, station) %>%
+  reframe(long = mean(long),
+          lat = mean(lat),
+          count = max(count))
+species = "grey_seal"
+
+predation.index = predation_index(dataframe.counts, dataframe.extract, species)
+
+## extract densities from map
+
+seal.density.map = extract_seal_density(dataframe.extract)
+
+
+
+
+```
 
 
 
