@@ -40,7 +40,7 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
 
   for(y in years){
 
-    print(paste("Year"), which(y == years), ", year", , "of", length(years))
+    print(paste("Year", y,  "- year", which(y == years), "of", length(years)))
 
     # subset to counts
     counts.y = subset(dataframe.counts, year == y)
