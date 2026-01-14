@@ -5,7 +5,7 @@
 #' @examples
 #' dataframe.extract = data.frame(year = 2023, long = 16.68711, lat = 57.50516)
 #' dataframe.counts = load_cormorant_census_counts()
-#' dataframe.counts = subset(df_data, year == 2023)
+#' dataframe.counts = subset(dataframe.counts, year == 2023)
 #' species = "cormorant"
 #' predation = predation_index(dataframe.counts, dataframe.extract, species)
 
@@ -37,16 +37,36 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
   extract.res = data.frame()
 
 
-  # for displaying progress
-  tot.progr = nrow(subset(dataframe.counts, year %in% years))
-  current.progr = 0
-  seq.to.print = round(seq(1, tot.progr, length.out = 50))
 
   for(y in years){
+
+    print(paste("Year"), which(y == years), ", year", , "of", length(years))
 
     # subset to counts
     counts.y = subset(dataframe.counts, year == y)
     extract.y = subset(dataframe.extract, year == y)
+
+    # subset to colonies/haul-outs within max distance to speed up calculations
+    within.dist =
+      rowSums(
+      sapply(
+        data.frame(
+          t(
+            sf::st_distance(
+              sf::st_as_sf(extract.y[,c("lat", "long")], coords = c("long","lat"), crs = 4326),
+              sf::st_as_sf(counts.y[,c("lat", "long")], coords = c("long","lat"), crs = 4326)
+            )
+          )
+        ),
+        as.numeric) <= max_dist
+      ) > 0
+
+    counts.y = counts.y[within.dist == TRUE,]
+
+    # for displaying progress
+    tot.progr = nrow(counts.y)
+    current.progr = 0
+    seq.to.print = round(seq(1, tot.progr, length.out = 50))
 
 
     # fix coordinates to match map
@@ -109,7 +129,8 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
     locs = sf::st_transform(locs, terra::crs(land))
 
     # extract values and add to dataframe
-    extract.y$predation = terra::extract(tot, locs, search_radius = 10000)$BSBD_0.9.6_250m
+    if(nrow(extract.y) > 1) extract.y$predation = terra::extract(tot, locs, search_radius = 10000)$BSBD_0.9.6_250m
+    if(nrow(extract.y) == 1) extract.y$predation = terra::extract(tot, locs, search_radius = 10000)$BSBD_0.9.6_250m[1]
     extract.res = rbind(extract.res, extract.y)
 
   }
