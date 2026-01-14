@@ -14,13 +14,13 @@ library(dplyr)
 ```
 
 ## Load seal count data
-These data were downloaded from Sharkweb and include data up until 2023. When new data are added, this file should be updated (see https://cran.r-project.org/web/packages/SHARK4R/index.html).
+These data were downloaded from Sharkweb and include data up until 2023. When new data are added, this file should be updated (potentially using https://cran.r-project.org/web/packages/SHARK4R/index.html).
 
 This report provides a good description of how the data are collected: <https://septentrio.uit.no/index.php/NAMMCOSP/article/view/8086>
 
-Some cleaning of the data is also done - this can be seen in the corresponding script for this function.
+Some cleaning of the data is also done within this function - this can be seen in the corresponding script for this function.
 
-Note that the data that are loaded here includes all data, generally with multiple counts per location. When the data are based on aerial surveys, zeroes are generally not provided. It is important to have a good understanding of how the data are collected, and what this means for how the data can be used. If absolute numbers are needed, it may be worth contacting NRM to get the numbers they use.
+Note that the data that are loaded here include all data, generally with multiple counts per location. Note that when the data are based on aerial surveys, zeroes are generally not provided, why maximum counts per location are generally used. This works fine overall, if it is the distribution or trend that is of interest, but if absolute numbers are needed, this becomes more problematic. So, if absolute numbers are needed it may be worth contacting NRM to get the numbers they use.
 
 ``` r
 seals = load_grey_seal_counts()
@@ -40,7 +40,7 @@ cormorant_data = load_cormorant_census_counts()
 
 The second function loads data from counts carried out at the county level. So far, possible values for "counties" include: "Stockholm" "Blekinge" "Gävleborg" "Kalmar" "Östergötland" "Södermanland" "Uppsala".
 
-Monitoring effort varies between counties. The number of pairs in the colony is set to NA if no monitoring was carried out, and zero if monitoring has been carried out (sometimes the latter is inferred, e.g. from knowing that a census was carried out in this year). It is possible to interpolate between counts, but it is important to remember that the number of pairs in a colony can vary drastically between years. Note also that methods may vary slightly between counties and years. The source of the data are noted.
+Monitoring effort varies between counties. The number of pairs in a colony is set to NA if no monitoring was carried out, and zero if monitoring has been carried out (sometimes the latter is inferred, e.g. from knowing that a census was carried out in this year). It is possible to interpolate between counts, but it is important to remember that the number of pairs in a colony can vary drastically between years. Note also that methods may vary slightly between counties and years. The source of the data are noted.
 
 Work is ongoing to fill in some of the gaps in the data.
 
@@ -73,11 +73,11 @@ The output is a data frame with the input data, mean predicted densities from th
 
 ## Calculated predation index
 
-This function calculates a predation index, either from grey seals or great cormorants, based on a dataframe the year and location (lat, long) for which the index is to be calculated, the species ("grey_seal" or "cormorant") as well as a data frame with count data of seals or cormorants. These count data could either be extracted using the functions within the package, or provided by the user. The count data should have the columns lat, long, year and count.
+This function calculates a predation index, either from grey seals or great cormorants, based on a dataframe with the year(s) and location(s) (lat, long) for which the index is to be calculated, the species ("grey_seal" or "cormorant") as well as a data frame with count data of seals or cormorants. These count data could either be extracted using the functions within the package, or provided by the user. The count data should have the columns lat, long, year and count.
 
-The function assumes that the seals and the cormorants spread out evenly in all directions around their colony. It is assumed that the maximum distance travelled is 30 km for cormorants (Fijn et al. 2021; Grémillet et al. 1997), and 60 km for grey seals (Oksanen et al. 2014; Sjöberg et al. 2000). Within this maximum distance, the density follows a normal distribution. This distributional field is then multiplied by the number of pairs in the colony, or seals counted at the haul-out site, and adjusted according to the area of land available within 30/60 km. The output can be interpreted as number of cormorant pairs/number of seals per m2, but considering the simplified assumptions, it is better to think of it as a predation index.
+The function assumes that the seals and the cormorants spread out evenly in all directions around their colony. It is assumed that the maximum distance travelled is 30 km for cormorants (Fijn et al. 2021; Grémillet et al. 1997), and 60 km for grey seals (Oksanen et al. 2014; Sjöberg et al. 2000). Within this maximum distance, the density follows a normal distribution. This distributional field is then multiplied by the number of pairs in the colony, or seals counted at the haul-out site, and adjusted according to the area of land available within 30/60 km. The output can be interpreted as number of cormorant pairs/number of seals per m2, but considering the simplifying assumptions, it is better to think of it as a predation index. This is repeated for all the colonies/haul-out sites, and values are then added together to produce a map of densities, from which the values are extracted for the provided locations.
 
-It is important to note that the function assumes that the count data are complete in relation to the provided coordinates and years! If data are missing then the function will assume that no seals or cormorants were present, and the predation index will be underestimated. So, data need to be available for within 30 and 60 km of the provided coordinates for cormorants and grey seals, respectively, for the relevant years.
+It is important to note that the function assumes that the count data are complete in relation to the provided coordinates and years. If data are missing then the function will assume that no seals or cormorants were present, and the predation index will be underestimated. So, data need to be available for within 30 and 60 km of the provided coordinates for cormorants and grey seals, respectively, for the relevant years.
 
 Fijn, R. C., De Jong, J. W., Adema, J., Van Horssen, P. W., Poot, M. J., Van Rijn, S., ... & Boudewijn, T. J. (2022). GPS-tracking of Great Cormorants Phalacrocorax carbo sinensis reveals sex-specific differences in foraging behaviour. Ardea, 109(3), 491-505.
 
