@@ -109,6 +109,7 @@ pred.index.asko.cormorant = predation_index(dataframe.counts, dataframe.extract,
 
 ## seals
 
+seals = load_grey_seal_counts()
 dataframe.counts = subset(seals, year == 2020) %>%
   group_by(year, station) %>% # this is because several counts are carried out by haul-out site per year
   reframe(long = mean(long),
@@ -126,16 +127,23 @@ pred.index.asko.seal = predation_index(dataframe.counts, dataframe.extract, spec
 
 ``` r
 
-## calculate predation index
+## locations and years for which to extract data
 
 dataframe.extract = data.frame(loc = c("Asköfjärden" ,      "Forsmark"     ,   "Galtfjärden"   ,    "Gaviksfjärden"    , "Holmön"   , "Torhamn" , "Kinnbäcksfjärden" ,     "Kvädöfjärden"    , "Lagnö"        ,            "Långvindsfjärden"  ,    "Norrbyn"   ,            "Råneå" ),
                                  lat = c(58.83848,  60.43521, 60.15875, 62.87285, 63.67662, 56.08515, 65.04903,  58.01046, 59.56530,  61.45513, 63.53121, 65.83789),
                                long =  c(17.63617,  18.15241, 18.61587, 18.23981, 20.85831, 15.78161, 21.53025, 16.73979, 18.84103,  17.16184, 19.81318, 22.42413))
                                
-dataframe.extract = expand.grid(dataframe.extract, year = 2003:2020)                               
+dataframe.extract = merge(data.frame(year = 2003:2020), dataframe.extract, by = NULL)
 
-dataframe.counts = subset(seals, year %in% 2003:2020) %>%
-  group_by(year, station) %>%
+## extract densities from map
+
+seal.density.map = extract_seal_density(dataframe.extract)
+
+
+## calculate predation index
+seals = load_grey_seal_counts()
+dataframe.counts = seals %>%
+group_by(year, station) %>%
   reframe(long = mean(long),
           lat = mean(lat),
           count = max(count))
@@ -143,9 +151,11 @@ species = "grey_seal"
 
 predation.index = predation_index(dataframe.counts, dataframe.extract, species)
 
-## extract densities from map
 
-seal.density.map = extract_seal_density(dataframe.extract)
+## compare
+
+
+
 
 
 

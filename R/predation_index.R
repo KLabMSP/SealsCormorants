@@ -32,7 +32,7 @@ predation_index <- function(dataframe.counts, dataframe.extract, species){
 
   # years
   years = sort(unique(dataframe.extract$year))
-  if(!(years %in% dataframe.counts$year)) return(print("You do not have count data for these years. Try again!"))
+  if(sum(years %in% dataframe.counts$year) != length(years)) return(print("You do not have count data for these years. Try again!"))
 
   extract.res = data.frame()
 
