@@ -11,6 +11,8 @@ library(devtools)
 install_github("KLabMSP/SealsCormorants", force = TRUE)
 library(SealsCormorants)
 library(dplyr)
+library(ggplot2)
+library(tidyr)
 ```
 
 ## Load seal count data
@@ -152,10 +154,41 @@ species = "grey_seal"
 predation.index = predation_index(dataframe.counts, dataframe.extract, species)
 
 
-## compare
+## make some simple comparisons
+
+comp = merge(predation.index, seal.density.map)
+
+ggplot() +
+  geom_point(data = comp, aes(predation, pred_mean)) +
+  labs(x = "Predation index from calculations", y = "Predation index from maps") +
+  theme_classic()
 
 
+ggplot() +
+  geom_point(data = comp, aes(year, pred_mean), colour = "tomato3") +
+  geom_point(data = comp, aes(year, predation*1000), colour = "slategrey") +
+  labs(x = "Year", y = "Predation (red = map, grey = calculation [scaled])") +
+  facet_wrap(~loc, scale = "free_y") +
+  theme_classic()
 
+
+ggplot() +
+  geom_point(data = comp, aes(predation, pred_mean)) +
+  labs(x = "Predation index from calculations", y = "Predation index from maps") +
+  facet_wrap(~loc, scale = "free") +
+  theme_classic()
+
+comp %>%
+  select(loc, predation, pred_mean) %>%
+  pivot_longer(cols = c(predation, pred_mean), names_to = "type", values_to = "predation") %>%
+  ggplot() +
+  geom_boxplot(aes(x = loc, y = predation, colour = type)) +
+  scale_colour_manual(values = c("slategrey", "tomato3"), labels = c("Predation index from calculations", "Predation index from maps")) +
+  facet_wrap(~type, scale = "free") +
+  theme_classic()
+  
+
+  
 
 
 

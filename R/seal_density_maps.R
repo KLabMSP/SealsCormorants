@@ -30,8 +30,8 @@ extract_seal_density <- function(dataframe){
       res = rbind(
         res,
         cbind(df.sub,
-              data.frame(pred_mean = terra::extract(map$pred_mean, locs, search_radius = 10000)[, c("pred_mean")]),
-              data.frame(pred_95CI_lower = terra::extract(map$pred_95CI_lower, locs, search_radius = 10000)[, c("pred_95CI_lower")]),
+              data.frame(pred_mean = terra::extract(map$pred_mean, locs, search_radius = 25000)[, c("pred_mean")]),
+              data.frame(pred_95CI_lower = terra::extract(map$pred_95CI_lower, locs, search_radius = 25000)[, c("pred_95CI_lower")]),
               terra::extract(map$pred_95CI_upper, locs, search_radius = 10000)[, c("pred_95CI_upper", "distance")]
         )
       )
