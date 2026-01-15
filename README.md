@@ -129,11 +129,11 @@ pred.index.asko.seal = predation_index(dataframe.counts, dataframe.extract, spec
 
 ## locations and years for which to extract data
 
-dataframe.extract = data.frame(loc = c("Asköfjärden" ,      "Forsmark"     ,   "Galtfjärden"   ,    "Gaviksfjärden"    , "Holmön"   , "Torhamn" , "Kinnbäcksfjärden" ,     "Kvädöfjärden"    , "Lagnö"        ,            "Långvindsfjärden"  ,    "Norrbyn"   ,            "Råneå" ),
-                                 lat = c(58.83848,  60.43521, 60.15875, 62.87285, 63.67662, 56.08515, 65.04903,  58.01046, 59.56530,  61.45513, 63.53121, 65.83789),
-                               long =  c(17.63617,  18.15241, 18.61587, 18.23981, 20.85831, 15.78161, 21.53025, 16.73979, 18.84103,  17.16184, 19.81318, 22.42413))
+dataframe.extract = data.frame(loc = c("Asköfjärden" ,      "Forsmark"     ,     "Gaviksfjärden"    , "Holmön"   , "Torhamn" , "Kinnbäcksfjärden" ,     "Kvädöfjärden"    , "Lagnö"        ,            "Långvindsfjärden"  ,    "Norrbyn"   ),
+                                 lat = c(58.83848,  60.43521,  62.87285, 63.67662, 56.08515, 65.04903,  58.01046, 59.56530,  61.45513, 63.53121),
+                               long =  c(17.63617,  18.15241,  18.23981, 20.85831, 15.78161, 21.53025, 16.73979, 18.84103,  17.16184, 19.81318))
                                
-dataframe.extract = merge(data.frame(year = 2003:2020), dataframe.extract, by = NULL)
+dataframe.extract = merge(data.frame(year = seq(2004, 2020, 2)), dataframe.extract, by = NULL)
 
 ## extract densities from map
 
